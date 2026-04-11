@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Solar Energy Monitoring PRO</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:linear-gradient(135deg,#020617,#0b2a1f);
+  color:white;
+}
+
+/* HEADER */
+.header{
+  text-align:center;
+  padding:18px;
+  font-size:22px;
+  font-weight:bold;
+  color:#34d399;
+  text-shadow:0 0 10px #34d399;
+}
+
+.sub{
+  text-align:center;
+  font-size:12px;
+  color:#94a3b8;
+  margin-top:-10px;
+}
+
+/* FILTER */
+.filter{
+  padding:10px;
+  text-align:center;
+}
+
+.filter input{
+  padding:6px;
+  margin:5px;
+  background:#020617;
+  color:white;
+  border:1px solid #14532d;
+  border-radius:6px;
+  max-width:180px;
+}
+
+.filter button{
+  padding:6px 12px;
+  background:#22c55e;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* GRID LEBAR LAPTOP */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:12px;
+  padding:12px;
+  margin:0 auto;
+  max-width:1400px;
+  width:95%;
+}
+
+/* CARD */
+.card{
+  background:rgba(15,23,42,0.85);
+  border:1px solid #14532d;
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
+  box-sizing:border-box;
+}
+
+.label{
+  font-size:13px;
+  color:#86efac;
+  margin-bottom:5px;
+}
+
+.value{
+  font-size:28px;
+  font-weight:bold;
+  word-break:break-word;
+}
+
+/* STATUS */
+.status-box{
+  margin:10px auto;
+  padding:12px;
+  background:rgba(15,23,42,0.9);
+  border-radius:12px;
+  border:1px solid #334155;
+  text-align:center;
+  max-width:1400px;
+  width:95%;
+}
+
+.ok{color:#22c55e;font-weight:bold;}
+.error{color:#ef4444;font-weight:bold;}
+
+/* CHART */
+.charts{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:12px;
+  padding:12px;
+  margin:0 auto;
+  max-width:1400px;
+  width:95%;
+}
+
+canvas{
+  background:#0f172a;
+  border-radius:12px;
+  padding:10px;
+  width:100% !important;
+  height:260px !important;
+}
+
+/* ===================== */
+/* RESPONSIVE HP         */
+/* ===================== */
+@media (max-width: 768px){
+
+  .grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts{
+    grid-template-columns: 1fr;
+  }
+
+  .value{
+    font-size:20px;
+  }
+
+  .header{
+    font-size:18px;
+  }
+
+  .filter input{
+    display:block;
+    margin:6px auto;
+    max-width:90%;
+  }
+
+  .filter button{
+    width:90%;
+    margin-top:5px;
+  }
+}
+
+@media (max-width: 420px){
+
+  .grid{
+    grid-template-columns: 1fr;
+  }
+
+  .value{
+    font-size:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">🌞 SOLAR ENERGY MONITOR</div>
+<div class="sub">Panel Surya Realtime Monitoring System</div>
+
+<div class="filter">
+  Dari :
+  <input type="datetime-local" id="start">
+
+  Sampai :
+  <input type="datetime-local" id="end">
+
+  <button onclick="filter()">Tampilkan</button>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="label">Tegangan (Voltage)</div>
+    <div class="value" id="v">0</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Arus (Current)</div>
+    <div class="value" id="a">0</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Daya (Power)</div>
+    <div class="value" id="p">0</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Energi (Wh)</div>
+    <div class="value" id="e">0</div>
+  </div>
+
+</div>
+
+<div class="status-box">
+Status Sistem :
+<span id="s">-</span>
+</div>
+
+<div class="charts">
+  <canvas id="vChart"></canvas>
+  <canvas id="aChart"></canvas>
+  <canvas id="pChart"></canvas>
+  <canvas id="eChart"></canvas>
+</div>
+
+<script>
+
+const url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSJC-OzTHbyuNfwFNyqNjhA9hFAgfCnIVW1jwRHIr03y0JtLonxrI9IcGTOSq8vHzJbuOp22BjLXDIB/pub?output=csv";
+
+let dataGlobal=[];
+
+function clean(x){
+  return parseFloat((x||"0").replace(",",".").trim())||0;
+}
+
+let label=[],vD=[],aD=[],pD=[],eD=[];
+
+const vChart=new Chart(document.getElementById("vChart"),{
+  type:'line',
+  data:{labels:label,datasets:[{label:'Tegangan (V)',data:vD,borderColor:'#34d399',tension:0.3,pointRadius:0}]}
+});
+
+const aChart=new Chart(document.getElementById("aChart"),{
+  type:'line',
+  data:{labels:label,datasets:[{label:'Arus (A)',data:aD,borderColor:'#60a5fa',tension:0.3,pointRadius:0}]}
+});
+
+const pChart=new Chart(document.getElementById("pChart"),{
+  type:'line',
+  data:{labels:label,datasets:[{label:'Daya (W)',data:pD,borderColor:'#fbbf24',tension:0.3,pointRadius:0}]}
+});
+
+const eChart=new Chart(document.getElementById("eChart"),{
+  type:'line',
+  data:{labels:label,datasets:[{label:'Energi (Wh)',data:eD,borderColor:'#a78bfa',tension:0.3,pointRadius:0}]}
+});
+
+async function load(){
+
+  const res=await fetch(url);
+  const text=await res.text();
+  const rows=text.trim().split("\n");
+
+  dataGlobal=[];
+
+  for(let i=1;i<rows.length;i++){
+    const c=rows[i].split(",");
+
+    dataGlobal.push({
+      tanggal:c[0],
+      v:clean(c[1]),
+      a:clean(c[2]),
+      p:clean(c[3]),
+      e:clean(c[4]),
+      s:(c[5]||"").toLowerCase()
+    });
+  }
+
+  tampilkan(dataGlobal);
+}
+
+function tampilkan(data){
+
+  if(!data.length) return;
+
+  label.length=vD.length=aD.length=pD.length=eD.length=0;
+
+  data.forEach(d=>{
+    label.push(d.tanggal);
+    vD.push(d.v);
+    aD.push(d.a);
+    pD.push(d.p);
+    eD.push(d.e);
+  });
+
+  const last=data[data.length-1];
+
+  document.getElementById("v").innerText=last.v;
+  document.getElementById("a").innerText=last.a;
+  document.getElementById("p").innerText=last.p;
+  document.getElementById("e").innerText=last.e;
+
+  const ok=(last.s==="ok"||last.s==="1");
+  const st=document.getElementById("s");
+  st.innerText=ok?"OK":"ERROR";
+  st.className=ok?"ok":"error";
+
+  vChart.update();
+  aChart.update();
+  pChart.update();
+  eChart.update();
+}
+
+function filter(){
+
+  const start=new Date(document.getElementById("start").value);
+  const end=new Date(document.getElementById("end").value);
+
+  const f=dataGlobal.filter(d=>{
+    const t=new Date(d.tanggal);
+    return t>=start && t<=end;
+  });
+
+  tampilkan(f);
+}
+
+setInterval(load,3000);
+load();
+
+</script>
+
+</body>
+</html>
