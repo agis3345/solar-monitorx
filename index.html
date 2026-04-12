@@ -2,166 +2,194 @@
 <html>
 <head>
 <title>Solar Energy Monitoring PRO</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
 body{
-  margin:0;
-  font-family:Segoe UI;
-  background:linear-gradient(135deg,#020617,#0b2a1f);
-  color:white;
+margin:0;
+font-family:Segoe UI;
+background:linear-gradient(135deg,#020617,#0b2a1f);
+color:white;
+transition:.3s;
+}
+
+/* ===== LIGHT MODE ===== */
+.light{
+background:linear-gradient(135deg,#f1f5f9,#e2e8f0);
+color:#0f172a;
 }
 
 /* HEADER */
 .header{
-  text-align:center;
-  padding:18px;
-  font-size:22px;
-  font-weight:bold;
-  color:#34d399;
-  text-shadow:0 0 10px #34d399;
+text-align:center;
+padding:16px;
+font-size:22px;
+font-weight:bold;
+color:#34d399;
+text-shadow:0 0 10px rgba(52,211,153,0.8);
+transition:.3s;
 }
 
+.light .header{
+color:#059669;
+text-shadow:0 0 6px rgba(16,185,129,0.35);
+}
+
+/* SUB */
 .sub{
-  text-align:center;
-  font-size:12px;
-  color:#94a3b8;
-  margin-top:-10px;
+text-align:center;
+font-size:12px;
+color:#94a3b8;
 }
 
 /* FILTER */
 .filter{
-  padding:10px;
-  text-align:center;
+padding:10px;
+text-align:center;
 }
 
-.filter input{
-  padding:6px;
-  margin:5px;
-  background:#020617;
-  color:white;
-  border:1px solid #14532d;
-  border-radius:6px;
-  max-width:180px;
+input,select{
+padding:6px;
+margin:5px;
+border-radius:6px;
+border:1px solid #14532d;
+background:#020617;
+color:white;
 }
 
-.filter button{
-  padding:6px 12px;
-  background:#22c55e;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
+.light input,
+.light select{
+background:white;
+color:black;
+border:1px solid #cbd5e1;
 }
 
-/* GRID LEBAR LAPTOP */
+/* BUTTON */
+button{
+padding:6px 12px;
+background:#22c55e;
+border:none;
+border-radius:6px;
+cursor:pointer;
+margin:3px;
+}
+
+/* GRID */
 .grid{
-  display:grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap:12px;
-  padding:12px;
-  margin:0 auto;
-  max-width:1400px;
-  width:95%;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
 }
 
 /* CARD */
 .card{
-  background:rgba(15,23,42,0.85);
-  border:1px solid #14532d;
-  border-radius:12px;
-  padding:12px;
-  text-align:center;
-  box-sizing:border-box;
+background:rgba(15,23,42,0.85);
+border:1px solid #14532d;
+border-radius:10px;
+padding:10px;
+text-align:center;
 }
 
+/* LIGHT CARD FIX */
+.light .card{
+background:white;
+border:1px solid #e2e8f0;
+}
+
+/* LABEL */
 .label{
-  font-size:13px;
-  color:#86efac;
-  margin-bottom:5px;
+font-size:12px;
+color:#86efac;
 }
 
+.light .label{
+color:#047857;
+}
+
+/* VALUE */
 .value{
-  font-size:28px;
-  font-weight:bold;
-  word-break:break-word;
+font-size:24px;
+font-weight:bold;
+color:white;
+text-shadow:0 0 6px rgba(255,255,255,0.15);
+}
+
+.light .value{
+color:#0f172a;
+text-shadow:none;
 }
 
 /* STATUS */
 .status-box{
-  margin:10px auto;
-  padding:12px;
-  background:rgba(15,23,42,0.9);
-  border-radius:12px;
-  border:1px solid #334155;
-  text-align:center;
-  max-width:1400px;
-  width:95%;
+margin:10px auto;
+padding:10px;
+border-radius:10px;
+border:1px solid #14532d;
+text-align:center;
+width:95%;
 }
 
-.ok{color:#22c55e;font-weight:bold;}
-.error{color:#ef4444;font-weight:bold;}
+.light .status-box{
+background:white;
+border:1px solid #e2e8f0;
+color:#0f172a;
+}
+
+/* OK / ERROR GLOW */
+.ok{
+color:#22c55e;
+font-weight:bold;
+text-shadow:0 0 8px rgba(34,197,94,0.7);
+}
+
+.error{
+color:#ef4444;
+font-weight:bold;
+text-shadow:0 0 8px rgba(239,68,68,0.7);
+}
+
+.light .ok{
+color:#16a34a;
+text-shadow:0 0 6px rgba(22,163,74,0.3);
+}
+
+.light .error{
+color:#dc2626;
+text-shadow:0 0 6px rgba(220,38,38,0.3);
+}
 
 /* CHART */
 .charts{
-  display:grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap:12px;
-  padding:12px;
-  margin:0 auto;
-  max-width:1400px;
-  width:95%;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+padding:10px;
+}
+
+.chart-box{
+background:rgba(15,23,42,0.85);
+border:1px solid #14532d;
+border-radius:10px;
+padding:10px;
+}
+
+.light .chart-box{
+background:white;
+border:1px solid #e2e8f0;
 }
 
 canvas{
-  background:#0f172a;
-  border-radius:12px;
-  padding:10px;
-  width:100% !important;
-  height:260px !important;
+height:380px !important;
+width:100% !important;
 }
 
-/* ===================== */
-/* RESPONSIVE HP         */
-/* ===================== */
-@media (max-width: 768px){
-
-  .grid{
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .charts{
-    grid-template-columns: 1fr;
-  }
-
-  .value{
-    font-size:20px;
-  }
-
-  .header{
-    font-size:18px;
-  }
-
-  .filter input{
-    display:block;
-    margin:6px auto;
-    max-width:90%;
-  }
-
-  .filter button{
-    width:90%;
-    margin-top:5px;
-  }
-}
-
-@media (max-width: 420px){
-
-  .grid{
-    grid-template-columns: 1fr;
-  }
-
-  .value{
-    font-size:18px;
-  }
+@media(max-width:768px){
+.grid{grid-template-columns:repeat(2,1fr);}
+.charts{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -169,156 +197,186 @@ canvas{
 <body>
 
 <div class="header">🌞 SOLAR ENERGY MONITOR</div>
-<div class="sub">Panel Surya Realtime Monitoring System</div>
+<div class="sub">Realtime Monitoring System</div>
 
 <div class="filter">
-  Dari :
-  <input type="datetime-local" id="start">
 
-  Sampai :
-  <input type="datetime-local" id="end">
+<button onclick="liveMode()">LIVE</button>
+<button onclick="resetFilter()">RESET</button>
 
-  <button onclick="filter()">Tampilkan</button>
+<select onchange="quickRange(this.value)">
+<option value="">Range</option>
+<option value="1">1 Jam</option>
+<option value="6">6 Jam</option>
+<option value="24">24 Jam</option>
+</select>
+
+<button onclick="toggleMode()">🌗 Mode</button>
+
+<br>
+
+Dari:
+<input id="start">
+
+Sampai:
+<input id="end">
+
+<button onclick="filterData()">Filter</button>
+
 </div>
 
 <div class="grid">
-
-  <div class="card">
-    <div class="label">Tegangan (Voltage)</div>
-    <div class="value" id="v">0</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Arus (Current)</div>
-    <div class="value" id="a">0</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Daya (Power)</div>
-    <div class="value" id="p">0</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Energi (Wh)</div>
-    <div class="value" id="e">0</div>
-  </div>
-
+<div class="card"><div class="label">Tegangan</div><div class="value" id="v">0</div></div>
+<div class="card"><div class="label">Arus</div><div class="value" id="a">0</div></div>
+<div class="card"><div class="label">Daya</div><div class="value" id="p">0</div></div>
+<div class="card"><div class="label">Energi</div><div class="value" id="e">0</div></div>
 </div>
 
 <div class="status-box">
-Status Sistem :
-<span id="s">-</span>
+Status: <span id="s">-</span>
 </div>
 
 <div class="charts">
-  <canvas id="vChart"></canvas>
-  <canvas id="aChart"></canvas>
-  <canvas id="pChart"></canvas>
-  <canvas id="eChart"></canvas>
+<div class="chart-box"><canvas id="vChart"></canvas></div>
+<div class="chart-box"><canvas id="aChart"></canvas></div>
+<div class="chart-box"><canvas id="pChart"></canvas></div>
+<div class="chart-box"><canvas id="eChart"></canvas></div>
 </div>
 
 <script>
 
+flatpickr("#start",{enableTime:true,dateFormat:"Y-m-d H:i",time_24hr:true,allowInput:true});
+flatpickr("#end",{enableTime:true,dateFormat:"Y-m-d H:i",time_24hr:true,allowInput:true});
+
 const url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSJC-OzTHbyuNfwFNyqNjhA9hFAgfCnIVW1jwRHIr03y0JtLonxrI9IcGTOSq8vHzJbuOp22BjLXDIB/pub?output=csv";
 
 let dataGlobal=[];
+let live=true;
+let filterActive=false;
 
 function clean(x){
-  return parseFloat((x||"0").replace(",",".").trim())||0;
+return parseFloat((x||"0").replace(",",".").trim())||0;
 }
 
 let label=[],vD=[],aD=[],pD=[],eD=[];
 
-const vChart=new Chart(document.getElementById("vChart"),{
-  type:'line',
-  data:{labels:label,datasets:[{label:'Tegangan (V)',data:vD,borderColor:'#34d399',tension:0.3,pointRadius:0}]}
-});
+const opt={
+responsive:true,
+maintainAspectRatio:false,
+elements:{line:{tension:0.35},point:{radius:0}}
+};
 
-const aChart=new Chart(document.getElementById("aChart"),{
-  type:'line',
-  data:{labels:label,datasets:[{label:'Arus (A)',data:aD,borderColor:'#60a5fa',tension:0.3,pointRadius:0}]}
-});
-
-const pChart=new Chart(document.getElementById("pChart"),{
-  type:'line',
-  data:{labels:label,datasets:[{label:'Daya (W)',data:pD,borderColor:'#fbbf24',tension:0.3,pointRadius:0}]}
-});
-
-const eChart=new Chart(document.getElementById("eChart"),{
-  type:'line',
-  data:{labels:label,datasets:[{label:'Energi (Wh)',data:eD,borderColor:'#a78bfa',tension:0.3,pointRadius:0}]}
-});
+const vChart=new Chart(document.getElementById("vChart"),{type:'line',data:{labels:label,datasets:[{label:'V',data:vD,borderColor:'#34d399'}]},options:opt});
+const aChart=new Chart(document.getElementById("aChart"),{type:'line',data:{labels:label,datasets:[{label:'A',data:aD,borderColor:'#60a5fa'}]},options:opt});
+const pChart=new Chart(document.getElementById("pChart"),{type:'line',data:{labels:label,datasets:[{label:'P',data:pD,borderColor:'#fbbf24'}]},options:opt});
+const eChart=new Chart(document.getElementById("eChart"),{type:'line',data:{labels:label,datasets:[{label:'E',data:eD,borderColor:'#a78bfa'}]},options:opt});
 
 async function load(){
 
-  const res=await fetch(url);
-  const text=await res.text();
-  const rows=text.trim().split("\n");
+const res=await fetch(url);
+const text=await res.text();
+const rows=text.trim().split("\n");
 
-  dataGlobal=[];
+dataGlobal=[];
 
-  for(let i=1;i<rows.length;i++){
-    const c=rows[i].split(",");
-
-    dataGlobal.push({
-      tanggal:c[0],
-      v:clean(c[1]),
-      a:clean(c[2]),
-      p:clean(c[3]),
-      e:clean(c[4]),
-      s:(c[5]||"").toLowerCase()
-    });
-  }
-
-  tampilkan(dataGlobal);
+for(let i=1;i<rows.length;i++){
+const c=rows[i].split(",");
+dataGlobal.push({
+tanggal:c[0],
+v:clean(c[1]),
+a:clean(c[2]),
+p:clean(c[3]),
+e:clean(c[4]),
+s:(c[5]||"").toLowerCase()
+});
 }
 
-function tampilkan(data){
-
-  if(!data.length) return;
-
-  label.length=vD.length=aD.length=pD.length=eD.length=0;
-
-  data.forEach(d=>{
-    label.push(d.tanggal);
-    vD.push(d.v);
-    aD.push(d.a);
-    pD.push(d.p);
-    eD.push(d.e);
-  });
-
-  const last=data[data.length-1];
-
-  document.getElementById("v").innerText=last.v;
-  document.getElementById("a").innerText=last.a;
-  document.getElementById("p").innerText=last.p;
-  document.getElementById("e").innerText=last.e;
-
-  const ok=(last.s==="ok"||last.s==="1");
-  const st=document.getElementById("s");
-  st.innerText=ok?"OK":"ERROR";
-  st.className=ok?"ok":"error";
-
-  vChart.update();
-  aChart.update();
-  pChart.update();
-  eChart.update();
+if(live && !filterActive){
+render(dataGlobal);
+}
 }
 
-function filter(){
+function render(data){
 
-  const start=new Date(document.getElementById("start").value);
-  const end=new Date(document.getElementById("end").value);
+if(!data.length) return;
 
-  const f=dataGlobal.filter(d=>{
-    const t=new Date(d.tanggal);
-    return t>=start && t<=end;
-  });
+label.length=vD.length=aD.length=pD.length=eD.length=0;
 
-  tampilkan(f);
+data.forEach(d=>{
+label.push(d.tanggal);
+vD.push(d.v);
+aD.push(d.a);
+pD.push(d.p);
+eD.push(d.e);
+});
+
+const last=data[data.length-1];
+
+v.innerText=last.v;
+a.innerText=last.a;
+p.innerText=last.p;
+e.innerText=last.e;
+
+s.innerText=(last.s==="ok"||last.s==="1")?"OK":"ERROR";
+s.className=(last.s==="ok"||last.s==="1")?"ok":"error";
+
+vChart.update();
+aChart.update();
+pChart.update();
+eChart.update();
 }
 
-setInterval(load,3000);
+function filterData(){
+filterActive=true;
+live=false;
+
+const f=dataGlobal.filter(d=>{
+const t=new Date(d.tanggal);
+return t>=new Date(start.value)&&t<=new Date(end.value);
+});
+
+render(f);
+}
+
+function quickRange(h){
+filterActive=true;
+live=false;
+
+const now=new Date();
+const past=new Date();
+past.setHours(now.getHours()-Number(h));
+
+render(dataGlobal.filter(d=>{
+const t=new Date(d.tanggal);
+return t>=past&&t<=now;
+}));
+}
+
+function liveMode(){
+filterActive=false;
+live=true;
+
+start.value="";
+end.value="";
+
+render(dataGlobal);
+}
+
+function resetFilter(){
+filterActive=false;
+live=true;
+start.value="";
+end.value="";
+load();
+}
+
+function toggleMode(){
+document.body.classList.toggle("light");
+render(live?dataGlobal:dataGlobal);
+}
+
+setInterval(()=>{ if(live) load(); },5000);
+
 load();
 
 </script>
